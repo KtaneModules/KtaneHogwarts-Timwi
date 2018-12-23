@@ -152,6 +152,16 @@ public class HogwartsModule : MonoBehaviour
         _selectedIndex = index;
         var assoc = _moduleAssociations[_selectedIndex];
         ModuleBackground.material.mainTexture = HouseBanners[(int) assoc.House];
+
+        if (assoc.Module.Length > 21)
+        {
+            var m = assoc.Module.Length / 2;
+            var p1 = assoc.Module.LastIndexOfAny(new[] { ' ', '-' }, m);
+            var p2 = assoc.Module.IndexOfAny(new[] { ' ', '-' }, m);
+            var p = p1 == -1 ? p2 : p2 == -1 ? p1 : m - p1 < p2 - m ? p1 : p2;
+            ParchmentText.text = p == -1 ? assoc.Module : assoc.Module.Substring(0, p) + (assoc.Module[p] == '-' ? "-" : "") + "\n" + assoc.Module.Substring(p + 1);
+        }
+        else
         ParchmentText.text = assoc.Module;
     }
 

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 37323cc6bf39b1140bf526174f6dd3d8
-timeCreated: 1545069431
+guid: 8979796d2150b124d99c0eda7923e779
+timeCreated: 1545537022
 licenseType: Free
 TrueTypeFontImporter:
   serializedVersion: 4
@@ -9,9 +9,9 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Harry P
+  fontName: InkPot
   fontNames:
-  - Harry P
+  - InkPot
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
