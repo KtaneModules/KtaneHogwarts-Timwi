@@ -36,7 +36,6 @@ public class HogwartsModule : MonoBehaviour
     private readonly Dictionary<House, int> _points = new Dictionary<House, int>();
     private bool _isStage2 = false;
     private bool _isSolved = false;
-    private bool _tieAllowed = false;
 
     void Start()
     {
@@ -162,7 +161,7 @@ public class HogwartsModule : MonoBehaviour
             ParchmentText.text = p == -1 ? assoc.Module : assoc.Module.Substring(0, p) + (assoc.Module[p] == '-' ? "-" : "") + "\n" + assoc.Module.Substring(p + 1);
         }
         else
-        ParchmentText.text = assoc.Module;
+            ParchmentText.text = assoc.Module;
     }
 
     private string[] _prevSolvedModules = new string[0];
@@ -192,7 +191,7 @@ public class HogwartsModule : MonoBehaviour
 
                 // Is there a tie that can no longer be broken?
                 var maxScore = _points.Max(kvp => kvp.Value);
-                if (!_tieAllowed && _points.Count(kvp => kvp.Value == maxScore) > 1 && !_moduleAssociations.Any(asc => asc.Points > maxScore))
+                if (_points.Count(kvp => kvp.Value == maxScore) > 1 && !_moduleAssociations.Any(asc => asc.Points > maxScore))
                 {
                     Debug.LogFormat(@"[Hogwarts #{0}] Strike because there is now a tie between {1} that can no longer be broken by another house.", _moduleId, _points.Where(kvp => kvp.Value == maxScore).Select(kvp => kvp.Key).JoinString(" and "));
                     Module.HandleStrike();
