@@ -48,6 +48,8 @@ public class HogwartsModule : MonoBehaviour
 
         // Find out what distinct modules are on the bomb.
         var allModules = Bomb.GetSolvableModuleNames();
+        if (Application.isEditor)
+            allModules = new List<string> { "Crazy Talk", "Broken Guitar Chords", "British Slang", "Nonograms", "Tap Code", "Braille" };
         // Remove only ONE copy of Hogwarts
         allModules.Remove("Hogwarts");
 
