@@ -253,6 +253,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Bomb: {fileID: 11489324}
   Module: {fileID: 11429752}
+  ModuleSelectable: {fileID: 11420650}
   Audio: {fileID: 11496072}
   LeftBtn: {fileID: 114097975422066862}
   RightBtn: {fileID: 114763117250101402}

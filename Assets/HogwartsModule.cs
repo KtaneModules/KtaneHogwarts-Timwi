@@ -13,6 +13,7 @@ public class HogwartsModule : MonoBehaviour
 {
     public KMBombInfo Bomb;
     public KMBombModule Module;
+    public KMSelectable ModuleSelectable;
     public KMAudio Audio;
     public KMSelectable LeftBtn;
     public KMSelectable RightBtn;
@@ -48,8 +49,8 @@ public class HogwartsModule : MonoBehaviour
 
         // Find out what distinct modules are on the bomb.
         var allModules = Bomb.GetSolvableModuleNames();
-        if (Application.isEditor)
-            allModules = new List<string> { "Crazy Talk", "Broken Guitar Chords", "British Slang", "Nonograms", "Tap Code", "Braille" };
+        //if (Application.isEditor)
+        //    allModules = new List<string> { "Crazy Talk", "Broken Guitar Chords", "British Slang", "Nonograms", "Tap Code", "Braille" };
         // Remove only ONE copy of Hogwarts
         allModules.Remove("Hogwarts");
 
@@ -126,6 +127,7 @@ public class HogwartsModule : MonoBehaviour
             {
                 Debug.LogFormat(@"[Hogwarts #{0}] Pressed {1}. Module solved.", _moduleId, house);
                 Module.HandlePass();
+                Audio.PlaySoundAtTransform(house + " wins", transform);
                 _isSolved = true;
             }
             else
@@ -142,7 +144,7 @@ public class HogwartsModule : MonoBehaviour
         return delegate
         {
             button.AddInteractionPunch();
-            Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, button.transform);
+            Audio.PlaySoundAtTransform("Click" + Rnd.Range(1, 10), button.transform);
             select((_selectedIndex + (left ? -1 : 1) + _moduleAssociations.Count) % _moduleAssociations.Count);
             return false;
         };
@@ -167,10 +169,29 @@ public class HogwartsModule : MonoBehaviour
     }
 
     private string[] _prevSolvedModules = new string[0];
+    private int _prevTimer;
     private void Update()
     {
-        if (_isStage2)
+        if (_isSolved)
             return;
+
+        if (_isStage2)
+        {
+            var timer = (int) Bomb.GetTime();
+            if (timer != _prevTimer)
+            {
+                Stage2Houses.Shuffle();
+                for (int i = 0; i < 4; i++)
+                    ModuleSelectable.Children[i + 2] = Stage2Houses[i];
+                Stage2Houses[0].transform.localPosition = new Vector3(-.045f, 0, .045f);
+                Stage2Houses[1].transform.localPosition = new Vector3(.028f, 0, .03f);
+                Stage2Houses[2].transform.localPosition = new Vector3(-.028f, 0, -.03f);
+                Stage2Houses[3].transform.localPosition = new Vector3(.045f, 0, -.045f);
+                ModuleSelectable.UpdateChildren();
+                _prevTimer = timer;
+            }
+            return;
+        }
 
         var newSolvedModules = Bomb.GetSolvedModuleNames();
         if (newSolvedModules.Count == _prevSolvedModules.Length)
@@ -203,9 +224,11 @@ public class HogwartsModule : MonoBehaviour
                 _moduleAssociations.RemoveAll(asc => asc.House == selAssoc.House);
                 if (_moduleAssociations.Count == 0)
                 {
+                    Audio.PlaySoundAtTransform("Transition" + Rnd.Range(1, 4), transform);
                     ActivateStage2();
                     break;
                 }
+                Audio.PlaySoundAtTransform("Solve" + Rnd.Range(1, 6), transform);
                 select(Rnd.Range(0, _moduleAssociations.Count));
             }
             else
@@ -219,6 +242,7 @@ public class HogwartsModule : MonoBehaviour
                 var missedHouse = Enumerable.Range(0, 4).IndexOf(house => !_points.ContainsKey((House) house) && !_moduleAssociations.Any(asc => asc.House == (House) house && !_specialModules.Contains(asc.Module)));
                 if (missedHouse != -1)
                 {
+                    Audio.PlaySoundAtTransform("Strike", transform);
                     Debug.LogFormat(@"[Hogwarts #{0}] Strike because you solved all {1} modules unselected.", _moduleId, (House) missedHouse);
                     Module.HandleStrike();
                     _points[(House) missedHouse] = -1;
