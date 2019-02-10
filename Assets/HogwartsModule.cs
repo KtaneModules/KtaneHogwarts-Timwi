@@ -28,7 +28,9 @@ public class HogwartsModule : MonoBehaviour
     public GameObject Stage1;
     public GameObject Stage2;
 
-    private static readonly string[] _specialModules = new[] { "Hogwarts", "Forget Everything", "Forget Me Not", "Souvenir", "The Swan" };
+    // This list does not need to contain Divided Squares because Divided Squares has Hogwarts on its “List M”, which means you can always solve Divided Squares even if Hogwarts is still waiting
+    private static readonly string[] _specialModules = new[] { "Forget Everything", "Forget Me Not", "Souvenir", "The Swan", "Simon's Stages" };
+
     private static int _moduleIdCounter = 1;
     private int _moduleId;
 
@@ -55,8 +57,7 @@ public class HogwartsModule : MonoBehaviour
 
         var retries = 0;
         retry:
-        // Place the “special” modules last in the list so that every house is equally likely to get a non-special module. This relies on .OrderBy() being a stable sort
-        var modules = allModules.Distinct().ToList().Shuffle().OrderBy(m => _specialModules.Contains(m)).ToList();
+        var modules = allModules.Distinct().Except(_specialModules).ToList().Shuffle();
         var founders = new[] { "GODRICGRYFFINDOR", "ROWENARAVENCLAW", "SALAZARSLYTHERIN", "HELGAHUFFLEPUFF" };
         var offset = Rnd.Range(0, 4);
         _moduleAssociations = modules.Select((m, ix) => new Assoc((House) ((ix + offset) % 4), m, founders[(ix + offset) % 4].GroupBy(ch => ch).Sum(gr => gr.Count() * m.Count(c => char.ToUpperInvariant(c) == gr.Key)))).ToList();
@@ -64,7 +65,7 @@ public class HogwartsModule : MonoBehaviour
         for (var i = 0; i < 4; i++)
         {
             var h = (House) i;
-            if (_moduleAssociations.All(asc => asc.House != h || _specialModules.Contains(asc.Module) || asc.Module == "Hogwarts"))
+            if (_moduleAssociations.Where(asc => asc.House == h).All(asc => asc.Module == "Hogwarts"))
             {
                 _moduleAssociations.RemoveAll(asc => asc.House == h);
                 _points[h] = -1;
