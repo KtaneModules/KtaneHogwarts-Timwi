@@ -35,6 +35,7 @@ public class HogwartsModule : MonoBehaviour
     private List<Assoc> _moduleAssociations;
     private int _selectedIndex = 0;
     private readonly Dictionary<House, int> _points = new Dictionary<House, int>();
+    private readonly Dictionary<House, string> _moduleNames = new Dictionary<House, string>();  // only used by Souvenir
     private bool _isStage2 = false;
     private bool _isSolved = false;
 
@@ -49,8 +50,6 @@ public class HogwartsModule : MonoBehaviour
 
         // Find out what distinct modules are on the bomb.
         var allModules = Bomb.GetSolvableModuleNames();
-        //if (Application.isEditor)
-        //    allModules = new List<string> { "Crazy Talk", "Broken Guitar Chords", "British Slang", "Nonograms", "Tap Code", "Braille" };
         // Remove only ONE copy of Hogwarts
         allModules.Remove("Hogwarts");
 
@@ -75,8 +74,8 @@ public class HogwartsModule : MonoBehaviour
         if (_moduleAssociations.Count == 0)
         {
             Debug.LogFormat(@"[Hogwarts #{0}] No suitable modules on the bomb to solve.", _moduleId);
-            for (int i = 0; i < 4; i++)
-                _points[(House) i] = 0;
+            for (int h = 0; h < 4; h++)
+                _points[(House) h] = 0;
             ActivateStage2();
             return;
         }
@@ -211,6 +210,7 @@ public class HogwartsModule : MonoBehaviour
             {
                 Debug.LogFormat(@"[Hogwarts #{0}] You solved {1} while it was selected, earning {2} points for {3}.", _moduleId, selAssoc.Module, selAssoc.Points, selAssoc.House);
                 _points[selAssoc.House] = selAssoc.Points;
+                _moduleNames[selAssoc.House] = selAssoc.Module;
 
                 // Is there a tie that can no longer be broken?
                 var maxScore = _points.Max(kvp => kvp.Value);
