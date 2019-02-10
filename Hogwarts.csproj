@@ -13,14 +13,12 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectGenerator>VSTU</UnityProjectGenerator>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
     <UnityVersion>2017.1.0p4</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -129,7 +127,7 @@
     <None Include="Assets\Shaders\MobileTransparentDiffuseUnderlay.shader" />
     <None Include="Assets\Shaders\UnlitTexturedLightmap.shader" />
     <None Include="Assets\Shaders\UnlitTransparentVertexColorUnderlay.shader" />
-    <None Include="Assets\TestHarness\Outline.shader" />
+    <None Include="Assets\TestHarness\Shaders\Outline.shader" />
     <None Include="Assets\TestHarness\Widgets\Shaders\3DText.shader" />
     <None Include="Assets\TestHarness\_THIS_FOLDER_IS_EXCLUDED_FROM_BUNDLES.txt" />
   </ItemGroup>
