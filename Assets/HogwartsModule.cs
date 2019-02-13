@@ -29,7 +29,7 @@ public class HogwartsModule : MonoBehaviour
     public GameObject Stage2;
 
     // This list does not need to contain Divided Squares because Divided Squares has Hogwarts on its “List M”, which means you can always solve Divided Squares even if Hogwarts is still waiting
-    private static readonly string[] _specialModules = new[] { "Forget Everything", "Forget Me Not", "Souvenir", "The Swan", "Simon's Stages" };
+    private static readonly string[] _specialModules = new[] { "Forget Everything", "Forget Me Not", "Souvenir", "The Swan", "Simon's Stages", "Forget This" };
 
     private static int _moduleIdCounter = 1;
     private int _moduleId;
