@@ -15,6 +15,8 @@ public class HogwartsModule : MonoBehaviour
     public KMBombModule Module;
     public KMSelectable ModuleSelectable;
     public KMAudio Audio;
+    public KMBossModule BossModule;
+
     public KMSelectable LeftBtn;
     public KMSelectable RightBtn;
     public KMSelectable[] Stage2Houses;
@@ -29,7 +31,8 @@ public class HogwartsModule : MonoBehaviour
     public GameObject Stage2;
 
     // This list does not need to contain Divided Squares because Divided Squares has Hogwarts on its “List M”, which means you can always solve Divided Squares even if Hogwarts is still waiting
-    private static readonly string[] _specialModules = new[] { "Forget Everything", "Forget Me Not", "Souvenir", "The Swan", "Simon's Stages", "Forget This", "Purgatory" };
+    private static readonly string[] _defaultIgnoredModules = new[] { "Forget Everything", "Forget Me Not", "Souvenir", "The Swan", "Simon's Stages", "Forget This", "Alchemy", "Cookie Jars" };
+    private string[] _ignoredModules;
 
     private static int _moduleIdCounter = 1;
     private int _moduleId;
@@ -55,9 +58,12 @@ public class HogwartsModule : MonoBehaviour
         // Remove only ONE copy of Hogwarts
         allModules.Remove("Hogwarts");
 
+        _ignoredModules = BossModule.GetIgnoredModules(Module, _defaultIgnoredModules);
+        Debug.LogFormat(@"<Hogwarts #{0}> Ignored modules: {1}", _moduleId, _ignoredModules.Join(", "));
+
         var retries = 0;
         retry:
-        var modules = allModules.Distinct().Except(_specialModules).ToList().Shuffle();
+        var modules = allModules.Distinct().Except(_ignoredModules).ToList().Shuffle();
         var founders = new[] { "GODRICGRYFFINDOR", "ROWENARAVENCLAW", "SALAZARSLYTHERIN", "HELGAHUFFLEPUFF" };
         var offset = Rnd.Range(0, 4);
         _moduleAssociations = modules.Select((m, ix) => new Assoc((House) ((ix + offset) % 4), m, founders[(ix + offset) % 4].GroupBy(ch => ch).Sum(gr => gr.Count() * m.Count(c => char.ToUpperInvariant(c) == gr.Key)))).ToList();
@@ -240,7 +246,7 @@ public class HogwartsModule : MonoBehaviour
                 _selectedIndex = _moduleAssociations.IndexOf(asc => asc.Module == curSel);
 
                 // Is there a house that is now losing out entirely?
-                var missedHouse = Enumerable.Range(0, 4).IndexOf(house => !_points.ContainsKey((House) house) && !_moduleAssociations.Any(asc => asc.House == (House) house && !_specialModules.Contains(asc.Module)));
+                var missedHouse = Enumerable.Range(0, 4).IndexOf(house => !_points.ContainsKey((House) house) && !_moduleAssociations.Any(asc => asc.House == (House) house && !_ignoredModules.Contains(asc.Module)));
                 if (missedHouse != -1)
                 {
                     Audio.PlaySoundAtTransform("Strike", transform);
