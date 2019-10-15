@@ -31,7 +31,7 @@ public class HogwartsModule : MonoBehaviour
     public GameObject Stage2;
 
     // This list does not need to contain Divided Squares because Divided Squares has Hogwarts on its “List M”, which means you can always solve Divided Squares even if Hogwarts is still waiting
-    private static readonly string[] _defaultIgnoredModules = new[] { "Forget Everything", "Forget Me Not", "Souvenir", "The Swan", "Simon's Stages", "Forget This", "Alchemy", "Cookie Jars" };
+    private static readonly string[] _defaultIgnoredModules = new[] { "Forget Everything", "Forget Me Not", "Hogwarts", "Souvenir", "The Swan", "Simon's Stages", "Forget This", "Alchemy", "Cookie Jars" };
     private string[] _ignoredModules;
 
     private static int _moduleIdCounter = 1;
@@ -53,17 +53,13 @@ public class HogwartsModule : MonoBehaviour
             Stage2Houses[i].OnInteract = stage2Select(Stage2Houses[i], (House) i);
         Stage2.SetActive(false);
 
-        // Find out what distinct modules are on the bomb.
-        var allModules = Bomb.GetSolvableModuleNames();
-        // Remove only ONE copy of Hogwarts
-        allModules.Remove("Hogwarts");
-
         _ignoredModules = BossModule.GetIgnoredModules(Module, _defaultIgnoredModules);
         Debug.LogFormat(@"<Hogwarts #{0}> Ignored modules: {1}", _moduleId, _ignoredModules.Join(", "));
 
         var retries = 0;
         retry:
-        var modules = allModules.Distinct().Except(_ignoredModules).ToList().Shuffle();
+        // Find out what distinct modules are on the bomb. (Filter out Hogwartses so that it cannot softlock on itself even if the ignore list gets messed up.)
+        var modules = Bomb.GetSolvableModuleNames().Where(s => s != "Hogwarts").Distinct().Except(_ignoredModules).ToList().Shuffle();
         var founders = new[] { "GODRICGRYFFINDOR", "ROWENARAVENCLAW", "SALAZARSLYTHERIN", "HELGAHUFFLEPUFF" };
         var offset = Rnd.Range(0, 4);
         _moduleAssociations = modules.Select((m, ix) => new Assoc((House) ((ix + offset) % 4), m, founders[(ix + offset) % 4].GroupBy(ch => ch).Sum(gr => gr.Count() * m.Count(c => char.ToUpperInvariant(c) == gr.Key)))).ToList();
@@ -71,11 +67,8 @@ public class HogwartsModule : MonoBehaviour
         for (var i = 0; i < 4; i++)
         {
             var h = (House) i;
-            if (_moduleAssociations.Where(asc => asc.House == h).All(asc => asc.Module == "Hogwarts"))
-            {
-                _moduleAssociations.RemoveAll(asc => asc.House == h);
+            if (!_moduleAssociations.Any(asc => asc.House == h))
                 _points[h] = -1;
-            }
         }
 
         if (_moduleAssociations.Count == 0)
