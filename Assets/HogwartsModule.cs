@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Hogwarts;
 using UnityEngine;
 
@@ -168,29 +170,11 @@ public class HogwartsModule : MonoBehaviour
     }
 
     private string[] _prevSolvedModules = new string[0];
-    private int _prevTimer;
+
     private void Update()
     {
-        if (_isSolved)
+        if (_isSolved || _isStage2)
             return;
-
-        if (_isStage2)
-        {
-            var timer = (int) Bomb.GetTime();
-            if (timer != _prevTimer)
-            {
-                Stage2Houses.Shuffle();
-                for (int i = 0; i < 4; i++)
-                    ModuleSelectable.Children[i + 2] = Stage2Houses[i];
-                Stage2Houses[0].transform.localPosition = new Vector3(-.045f, 0, .045f);
-                Stage2Houses[1].transform.localPosition = new Vector3(.028f, 0, .03f);
-                Stage2Houses[2].transform.localPosition = new Vector3(-.028f, 0, -.03f);
-                Stage2Houses[3].transform.localPosition = new Vector3(.045f, 0, -.045f);
-                ModuleSelectable.UpdateChildren();
-                _prevTimer = timer;
-            }
-            return;
-        }
 
         var newSolvedModules = Bomb.GetSolvedModuleNames();
         if (newSolvedModules.Count == _prevSolvedModules.Length)
@@ -260,5 +244,83 @@ public class HogwartsModule : MonoBehaviour
         var maxScore = _points.Max(kvp => kvp.Value);
         var houses = _points.Where(kvp => kvp.Value == maxScore).Select(kvp => kvp.Key).ToArray();
         Debug.LogFormat(@"[Hogwarts #{0}] Stage 2 activated. Correct answer{1}: {2}", _moduleId, houses.Length > 1 ? "s" : null, houses.JoinString(", "));
+    }
+
+#pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} find color [Scroll to the next module containing “color” in the name] | !{0} cycle 5 [Cycle forward 5 entries] | !{0} gryffindor/ravenclaw/slytherin/hufflepuff";
+#pragma warning restore 414
+
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        command = command.ToUpperInvariant().Trim();
+
+        Match m;
+        if ((m = Regex.Match(command, @"^\s*find\s+(.*?)\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)).Success)
+        {
+            if (_isStage2)
+            {
+                yield return "sendtochaterror You’re already in Stage 2. Please select a House.";
+                yield break;
+            }
+
+            var ixs = Enumerable.Range(0, _moduleAssociations.Count).Where(i => _moduleAssociations[i].Module.ContainsIgnoreCase(m.Groups[1].Value)).ToArray();
+            if (ixs.Length == 0)
+            {
+                yield return string.Format("sendtochat No modules containing “{0}”.", m.Groups[1].Value);
+                yield break;
+            }
+            if (ixs.Length == 1 && ixs[0] == _selectedIndex)
+            {
+                yield return string.Format("sendtochat No other modules containing “{0}”.", m.Groups[1].Value);
+                yield break;
+            }
+            yield return null;
+
+            var nextIxIx = ixs.IndexOf(i => i > _selectedIndex);
+            var newIx = ixs[(nextIxIx == -1) ? 0 : nextIxIx];
+            var forwardsDistance = newIx > _selectedIndex ? newIx - _selectedIndex : newIx + _moduleAssociations.Count - _selectedIndex;
+            var backwardsDistance = newIx < _selectedIndex ? _selectedIndex - newIx : _selectedIndex + _moduleAssociations.Count - newIx;
+            var buttonToPress = (forwardsDistance <= backwardsDistance) ? RightBtn : LeftBtn;
+
+            while (_selectedIndex != newIx)
+            {
+                buttonToPress.OnInteract();
+                yield return new WaitForSeconds(.25f);
+                yield return "trycancel";
+            }
+            yield break;
+        }
+
+        int num;
+        if ((m = Regex.Match(command, @"^\s*cycle\s+(\d+)\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)).Success && int.TryParse(m.Groups[1].Value, out num))
+        {
+            if (_isStage2)
+            {
+                yield return "sendtochaterror You’re already in Stage 2. Please select a House.";
+                yield break;
+            }
+
+            yield return null;
+            for (int i = 0; i < num; i++)
+            {
+                RightBtn.OnInteract();
+                yield return new WaitForSeconds(1.25f);
+                yield return "trycancel";
+            }
+            yield break;
+        }
+
+        if ((m = Regex.Match(command, @"^\s*(g(ryffindor)?|r(avenclaw)?|s(lytherin)?|h(ufflepuff)?)\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)).Success)
+        {
+            if (!_isStage2)
+            {
+                yield return "sendtochaterror You’re not in Stage 2 yet. Please solve some modules first.";
+                yield break;
+            }
+
+            yield return null;
+            Stage2Houses["grshGRSH".IndexOf(m.Groups[1].Value[0]) % 4].OnInteract();
+            yield break;
+        }
     }
 }
