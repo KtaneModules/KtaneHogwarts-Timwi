@@ -45,6 +45,7 @@ public class HogwartsModule : MonoBehaviour
     private readonly Dictionary<House, string> _moduleNames = new Dictionary<House, string>();  // only used by Souvenir
     private bool _isStage2 = false;
     private bool _isSolved = false;
+    private bool _strikeOnTie = true;
 
     void Start()
     {
@@ -94,16 +95,15 @@ public class HogwartsModule : MonoBehaviour
             .ToArray();
         for (int h1 = 0; h1 < 4; h1++)
             for (int h2 = h1 + 1; h2 < 4; h2++)
-                if (info[h1] != null && info[h2] != null && info[h1].NumModules == 1 && info[h2].NumModules == 1 && info[h1].MaxPoints == info[h2].MaxPoints && Enumerable.Range(0, 4).All(h3 => h3 == h1 || h3 == h2 || info[h3] == null || info[h3].MaxPoints < info[h1].MaxPoints))
+                if (info[h1] != null && info[h2] != null && info[h1].NumModules == 1 && info[h2].NumModules == 1 && info[h1].MaxPoints == info[h2].MaxPoints
+                    && Enumerable.Range(0, 4).All(h3 => h3 == h1 || h3 == h2 || info[h3] == null || info[h3].MaxPoints < info[h1].MaxPoints))
                 {
                     retries++;
                     if (retries >= 100)
                     {
-                        Debug.LogFormat(@"[Hogwarts #{0}] Not possible to avoid a tie for the House Cup.", _moduleId);
-                        for (int h = 0; h < 4; h++)
-                            _points[(House) h] = 0;
-                        ActivateStage2();
-                        return;
+                        Debug.LogFormat(@"[Hogwarts #{0}] Not possible to avoid a tie for the House Cup. You will not receive a strike.", _moduleId);
+                        _strikeOnTie = false;
+                        goto noWorries;
                     }
                     for (int i = 0; i < _moduleAssociations.Count; i++)
                         Debug.LogFormat(@"<Hogwarts #{0}> {1} = {2} ({3} points)", _moduleId, _moduleAssociations[i].Module, _moduleAssociations[i].House, _moduleAssociations[i].Points);
@@ -111,6 +111,7 @@ public class HogwartsModule : MonoBehaviour
                     goto retry;
                 }
 
+        noWorries:;
         for (int i = 0; i < _moduleAssociations.Count; i++)
             Debug.LogFormat(@"[Hogwarts #{0}] {1} = {2} ({3} points)", _moduleId, _moduleAssociations[i].Module, _moduleAssociations[i].House, _moduleAssociations[i].Points);
     }
@@ -196,22 +197,8 @@ public class HogwartsModule : MonoBehaviour
                 _points[selAssoc.House] = selAssoc.Points;
                 _moduleNames[selAssoc.House] = selAssoc.Module;
 
-                // Is there a tie that can no longer be broken?
-                var maxScore = _points.Max(kvp => kvp.Value);
-                if (_points.Count(kvp => kvp.Value == maxScore) > 1 && !_moduleAssociations.Any(asc => asc.Points > maxScore))
-                {
-                    Debug.LogFormat(@"[Hogwarts #{0}] Strike because there is now a tie between {1} that can no longer be broken by another house.", _moduleId, _points.Where(kvp => kvp.Value == maxScore).Select(kvp => kvp.Key).JoinString(" and "));
-                    Module.HandleStrike();
-                }
-
                 // Remove all the other modules for the same house
                 _moduleAssociations.RemoveAll(asc => asc.House == selAssoc.House);
-                if (_moduleAssociations.Count == 0)
-                {
-                    Audio.PlaySoundAtTransform("Transition" + Rnd.Range(1, 4), transform);
-                    ActivateStage2();
-                    break;
-                }
                 Audio.PlaySoundAtTransform("Solve" + Rnd.Range(1, 6), transform);
                 select(Rnd.Range(0, _moduleAssociations.Count));
             }
@@ -232,6 +219,13 @@ public class HogwartsModule : MonoBehaviour
                     _points[(House) missedHouse] = -1;
                 }
             }
+
+            if (_moduleAssociations.Count == 0)
+            {
+                Audio.PlaySoundAtTransform("Transition" + Rnd.Range(1, 4), transform);
+                ActivateStage2();
+                break;
+            }
         }
     }
 
@@ -243,6 +237,11 @@ public class HogwartsModule : MonoBehaviour
         ModuleBackground.material.mainTexture = StandardBackground;
         var maxScore = _points.Max(kvp => kvp.Value);
         var houses = _points.Where(kvp => kvp.Value == maxScore).Select(kvp => kvp.Key).ToArray();
+        if (houses.Length > 1 && _strikeOnTie)
+        {
+            Debug.LogFormat(@"[Hogwarts #{0}] Strike because there is a tie between {1}.", _moduleId, houses.JoinString(" and "));
+            Module.HandleStrike();
+        }
         Debug.LogFormat(@"[Hogwarts #{0}] Stage 2 activated. Correct answer{1}: {2}", _moduleId, houses.Length > 1 ? "s" : null, houses.JoinString(", "));
     }
 
