@@ -56,6 +56,12 @@ public class HogwartsModule : MonoBehaviour
             Stage2Houses[i].OnInteract = stage2Select(Stage2Houses[i], (House) i);
         Stage2.SetActive(false);
 
+        StartCoroutine(initialization());
+    }
+
+    IEnumerator initialization()
+    {
+        yield return null;
         _ignoredModules = BossModule.GetIgnoredModules(Module, _defaultIgnoredModules);
         Debug.LogFormat(@"<Hogwarts #{0}> Ignored modules: {1}", _moduleId, _ignoredModules.Join(", "));
 
@@ -80,7 +86,7 @@ public class HogwartsModule : MonoBehaviour
             for (int h = 0; h < 4; h++)
                 _points[(House) h] = 0;
             ActivateStage2();
-            return;
+            yield break;
         }
         else
             select(0);
@@ -105,9 +111,6 @@ public class HogwartsModule : MonoBehaviour
                         _strikeOnTie = false;
                         goto noWorries;
                     }
-                    for (int i = 0; i < _moduleAssociations.Count; i++)
-                        Debug.LogFormat(@"<Hogwarts #{0}> {1} = {2} ({3} points)", _moduleId, _moduleAssociations[i].Module, _moduleAssociations[i].House, _moduleAssociations[i].Points);
-                    Debug.LogFormat(@"<Hogwarts #{0}> UNAVOIDABLE TIE! Retrying...", _moduleId);
                     goto retry;
                 }
 
@@ -200,7 +203,7 @@ public class HogwartsModule : MonoBehaviour
                 // Remove all the other modules for the same house
                 _moduleAssociations.RemoveAll(asc => asc.House == selAssoc.House);
                 Audio.PlaySoundAtTransform("Solve" + Rnd.Range(1, 6), transform);
-                select(Rnd.Range(0, _moduleAssociations.Count));
+                _selectedIndex = Rnd.Range(0, _moduleAssociations.Count);
             }
             else
             {
@@ -226,6 +229,7 @@ public class HogwartsModule : MonoBehaviour
                 ActivateStage2();
                 break;
             }
+            select(_selectedIndex);
         }
     }
 

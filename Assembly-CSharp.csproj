@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\HogwartsModule.cs" />
+     <Compile Include="Assets\KMScripts\Easing.cs" />
      <Compile Include="Assets\KMScripts\GeneralExtensions.cs" />
      <Compile Include="Assets\KMScripts\KMBombInfoExtensions.cs" />
      <Compile Include="Assets\KMScripts\KMBossModule.cs" />
@@ -78,6 +79,7 @@
      <Compile Include="Assets\TestHarness\Widgets\SerialNumber.cs" />
      <Compile Include="Assets\TestHarness\Widgets\TwoFactorWidget.cs" />
      <Compile Include="Assets\TestHarness\Widgets\Widget.cs" />
+     <Compile Include="Assets\TestModule.cs" />
      <Compile Include="Assets\Ut.cs" />
      <None Include="Assets\Shaders\KT_3D_Text-Diffuse.shader" />
      <None Include="Assets\Shaders\BlendTwoTexturesUnlit.shader" />
