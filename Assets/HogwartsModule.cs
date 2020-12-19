@@ -83,6 +83,7 @@ public class HogwartsModule : MonoBehaviour
         if (_moduleAssociations.Count == 0)
         {
             Debug.LogFormat(@"[Hogwarts #{0}] No suitable modules on the bomb to solve.", _moduleId);
+            _strikeOnTie = false;
             for (int h = 0; h < 4; h++)
                 _points[(House) h] = 0;
             ActivateStage2();
