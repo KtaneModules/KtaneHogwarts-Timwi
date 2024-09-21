@@ -103,7 +103,7 @@ public class HogwartsModule : MonoBehaviour
         for (int h1 = 0; h1 < 4; h1++)
             for (int h2 = h1 + 1; h2 < 4; h2++)
                 if (info[h1] != null && info[h2] != null && info[h1].NumModules == 1 && info[h2].NumModules == 1 && info[h1].MaxPoints == info[h2].MaxPoints
-                    && Enumerable.Range(0, 4).All(h3 => h3 == h1 || h3 == h2 || info[h3] == null || info[h3].MaxPoints < info[h1].MaxPoints))
+                    && Enumerable.Range(0, 4).All(h3 => h3 == h1 || h3 == h2 || info[h3] == null || info[h3].MaxPoints <= info[h1].MaxPoints))
                 {
                     retries++;
                     if (retries >= 100)
