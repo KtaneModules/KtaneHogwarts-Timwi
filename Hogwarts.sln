@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{3305F720-C46D-0D02-C366-EE46A0C6FCA8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hogwarts", "Hogwarts.csproj", "{AFB9F4EE-D958-6ED8-1C46-042F4BD9600C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{62911ACB-1A0B-DA4C-05CE-31E56E5CBB3C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hogwarts-Editor", "Hogwarts-Editor.csproj", "{FF34A82C-581B-42BE-F3EC-30F1642037D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,19 +11,19 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3305F720-C46D-0D02-C366-EE46A0C6FCA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3305F720-C46D-0D02-C366-EE46A0C6FCA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3305F720-C46D-0D02-C366-EE46A0C6FCA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3305F720-C46D-0D02-C366-EE46A0C6FCA8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{62911ACB-1A0B-DA4C-05CE-31E56E5CBB3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{62911ACB-1A0B-DA4C-05CE-31E56E5CBB3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{62911ACB-1A0B-DA4C-05CE-31E56E5CBB3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{62911ACB-1A0B-DA4C-05CE-31E56E5CBB3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFB9F4EE-D958-6ED8-1C46-042F4BD9600C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFB9F4EE-D958-6ED8-1C46-042F4BD9600C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFB9F4EE-D958-6ED8-1C46-042F4BD9600C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFB9F4EE-D958-6ED8-1C46-042F4BD9600C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF34A82C-581B-42BE-F3EC-30F1642037D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF34A82C-581B-42BE-F3EC-30F1642037D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF34A82C-581B-42BE-F3EC-30F1642037D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF34A82C-581B-42BE-F3EC-30F1642037D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Assembly-CSharp.csproj
+		StartupItem = Hogwarts.csproj
 	EndGlobalSection
 EndGlobal

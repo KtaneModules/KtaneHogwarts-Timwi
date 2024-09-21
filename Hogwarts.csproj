@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>4</LangVersion>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,10 +9,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{3305F720-C46D-0D02-C366-EE46A0C6FCA8}</ProjectGuid>
+    <ProjectGuid>{AFB9F4EE-D958-6ED8-1C46-042F4BD9600C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <AssemblyName>Hogwarts</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>Assets</BaseDirectory>
@@ -51,8 +51,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\GlobalSuppressions.cs" />
      <Compile Include="Assets\HogwartsModule.cs" />
+     <Compile Include="Assets\KMScripts\AssemblyShare.cs" />
      <Compile Include="Assets\KMScripts\Easing.cs" />
+     <Compile Include="Assets\KMScripts\GameFixes.cs" />
      <Compile Include="Assets\KMScripts\GeneralExtensions.cs" />
      <Compile Include="Assets\KMScripts\KMBombInfoExtensions.cs" />
      <Compile Include="Assets\KMScripts\KMBossModule.cs" />
@@ -60,33 +63,37 @@
      <Compile Include="Assets\KMScripts\KMRuleSeedable.cs" />
      <Compile Include="Assets\KMScripts\PrivateWhenPlayingAttribute.cs" />
      <Compile Include="Assets\KMScripts\ReadOnlyWhenPlayingAttribute.cs" />
+     <Compile Include="Assets\KMScripts\ReflectionHelper.cs" />
      <Compile Include="Assets\TestHarness\EdgeworkConfiguration.cs" />
-     <Compile Include="Assets\TestHarness\NeedyTimer.cs" />
-     <Compile Include="Assets\TestHarness\SevenSegDisplay.cs" />
-     <Compile Include="Assets\TestHarness\StatusLight\StatusLight.cs" />
+     <Compile Include="Assets\TestHarness\StatusLight\TestHarnessStatusLight.cs" />
      <Compile Include="Assets\TestHarness\TestHarness.cs" />
+     <Compile Include="Assets\TestHarness\TestHarnessNeedyTimer.cs" />
+     <Compile Include="Assets\TestHarness\TestHarnessSevenSegDisplay.cs" />
      <Compile Include="Assets\TestHarness\TestHighlightable.cs" />
      <Compile Include="Assets\TestHarness\TestSelectable.cs" />
      <Compile Include="Assets\TestHarness\TestSelectableArea.cs" />
      <Compile Include="Assets\TestHarness\THWidget.cs" />
      <Compile Include="Assets\TestHarness\TimerModule.cs" />
      <Compile Include="Assets\TestHarness\TwitchPlaysID.cs" />
-     <Compile Include="Assets\TestHarness\Widgets\BatteryWidget.cs" />
      <Compile Include="Assets\TestHarness\Widgets\CustomWidget.cs" />
-     <Compile Include="Assets\TestHarness\Widgets\IndicatorWidget.cs" />
-     <Compile Include="Assets\TestHarness\Widgets\ModWidget.cs" />
-     <Compile Include="Assets\TestHarness\Widgets\PortWidget.cs" />
-     <Compile Include="Assets\TestHarness\Widgets\SerialNumber.cs" />
+     <Compile Include="Assets\TestHarness\Widgets\TestHarnessBatteryWidget.cs" />
+     <Compile Include="Assets\TestHarness\Widgets\TestHarnessIndicatorWidget.cs" />
+     <Compile Include="Assets\TestHarness\Widgets\TestHarnessModWidget.cs" />
+     <Compile Include="Assets\TestHarness\Widgets\TestHarnessPortWidget.cs" />
+     <Compile Include="Assets\TestHarness\Widgets\TestHarnessSerialNumber.cs" />
+     <Compile Include="Assets\TestHarness\Widgets\TestHarnessWidget.cs" />
      <Compile Include="Assets\TestHarness\Widgets\TwoFactorWidget.cs" />
-     <Compile Include="Assets\TestHarness\Widgets\Widget.cs" />
      <Compile Include="Assets\TestModule.cs" />
      <Compile Include="Assets\Ut.cs" />
+     <None Include="Assets\Plugins\Managed\Newtonsoft.Json_license.txt" />
      <None Include="Assets\Shaders\KT_3D_Text-Diffuse.shader" />
      <None Include="Assets\Shaders\BlendTwoTexturesUnlit.shader" />
      <None Include="Assets\Shaders\BlendTwoTexturesLitAndUnlitVertexColor.shader" />
      <None Include="Assets\Shaders\KT_Mobile-Diffuse.shader" />
      <None Include="Assets\Shaders\KT_3D_Text.shader" />
+     <None Include="Assets\Plugins\Steamworks.NET\redist\steam_appid.txt" />
      <None Include="Assets\TestHarness\Shaders\Outline.shader" />
+     <None Include="Assets\Hogwarts.asmdef" />
      <None Include="Assets\Shaders\MobileTransparentDiffuseUnderlay.shader" />
      <None Include="Assets\TestHarness\_THIS_FOLDER_IS_EXCLUDED_FROM_BUNDLES.txt" />
      <None Include="Assets\TestHarness\Widgets\Shaders\3DText.shader" />
@@ -235,6 +242,12 @@
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
+ <Reference Include="UnityEditor.UI">
+ <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/Editor/UnityEditor.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.TestRunner">
+ <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/TestRunner/Editor/UnityEditor.TestRunner.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.TestRunner">
  <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/TestRunner/UnityEngine.TestRunner.dll</HintPath>
  </Reference>
@@ -244,20 +257,65 @@
  <Reference Include="UnityEngine.Timeline">
  <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/Timeline/RuntimeEditor/UnityEngine.Timeline.dll</HintPath>
  </Reference>
+ <Reference Include="UnityEditor.Timeline">
+ <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/Timeline/Editor/UnityEditor.Timeline.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.TreeEditor">
+ <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/TreeEditor/Editor/UnityEditor.TreeEditor.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.UIAutomation">
  <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/UIAutomation/UnityEngine.UIAutomation.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.UIAutomation">
+ <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/UIAutomation/Editor/UnityEditor.UIAutomation.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
  <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
  </Reference>
+ <Reference Include="UnityEditor.Networking">
+ <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/Networking/Editor/UnityEditor.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.GoogleAudioSpatializer">
+ <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/UnityGoogleAudioSpatializer/Editor/UnityEditor.GoogleAudioSpatializer.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.GoogleAudioSpatializer">
  <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/UnityGoogleAudioSpatializer/RuntimeEditor/UnityEngine.GoogleAudioSpatializer.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.HoloLens">
+ <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/UnityHoloLens/Editor/UnityEditor.HoloLens.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.HoloLens">
  <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
  </Reference>
+ <Reference Include="UnityEditor.SpatialTracking">
+ <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/Editor/UnityEditor.SpatialTracking.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.SpatialTracking">
  <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.VR">
+ <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/Editor/UnityEditor.VR.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.Graphs">
+ <HintPath>D:/Unity/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.WebGL.Extensions">
+ <HintPath>D:/Unity/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.WindowsStandalone.Extensions">
+ <HintPath>D:/Unity/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
+ </Reference>
+ <Reference Include="0Harmony">
+ <HintPath>D:/c/KTANE/Hogwarts/Assets/Editor/Plugins/Managed/0Harmony.dll</HintPath>
+ </Reference>
+ <Reference Include="DotNetZip">
+ <HintPath>D:/c/KTANE/Hogwarts/Assets/Editor/Plugins/Managed/DotNetZip.dll</HintPath>
+ </Reference>
+ <Reference Include="KtaneAssemblyExporter">
+ <HintPath>D:/c/KTANE/Hogwarts/Assets/Editor/Plugins/Managed/KtaneAssemblyExporter.dll</HintPath>
+ </Reference>
+ <Reference Include="KtaneModkitUtils">
+ <HintPath>D:/c/KTANE/Hogwarts/Assets/Editor/Plugins/Managed/KtaneModkitUtils.dll</HintPath>
  </Reference>
  <Reference Include="KMFramework">
  <HintPath>D:/c/KTANE/Hogwarts/Assets/Plugins/Managed/KMFramework.dll</HintPath>
@@ -265,11 +323,20 @@
  <Reference Include="Newtonsoft.Json">
  <HintPath>D:/c/KTANE/Hogwarts/Assets/Plugins/Managed/Newtonsoft.Json.dll</HintPath>
  </Reference>
+ <Reference Include="UnityEditor.Advertisements">
+ <HintPath>C:/Users/Timwi/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.ads@2.0.8/Editor/UnityEditor.Advertisements.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.Analytics">
  <HintPath>C:/Users/Timwi/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.13/UnityEngine.Analytics.dll</HintPath>
  </Reference>
+ <Reference Include="UnityEditor.Analytics">
+ <HintPath>C:/Users/Timwi/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.13/Editor/UnityEditor.Analytics.dll</HintPath>
+ </Reference>
  <Reference Include="UnityEngine.Purchasing">
  <HintPath>C:/Users/Timwi/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.purchasing@0.0.19/UnityEngine.Purchasing.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.Purchasing">
+ <HintPath>C:/Users/Timwi/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.purchasing@0.0.19/Editor/UnityEditor.Purchasing.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.StandardEvents">
  <HintPath>C:/Users/Timwi/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.10/UnityEngine.StandardEvents.dll</HintPath>

@@ -1,0 +1,10 @@
+{
+  "name": "Hogwarts-Editor",
+  "references": [
+    "Hogwarts"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": []
+}
